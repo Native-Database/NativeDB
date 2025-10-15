@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vey - RDR Natives</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">N</div>
+                <div>
+                    <h1>RDR Natives</h1>
+                    <div class="sub">K3rhos / natives.h</div>
+                </div>
+            </div>
+
+            <div class="search">
+                <input id="globalSearch" placeholder="Search namespace or native..." />
+            </div>
+
+            <div class="sidebar-content">
+                <div id="namespaces" class="namespaces">Loading...</div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;">
+                <div style="display:flex;gap:8px;width:100%;">
+                    <button class="btn-secondary" id="refreshBtn"
+                        style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 4v6h-6" />
+                            <path d="M1 20v-6h6" />
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                        </svg>
+                        Refresh
+                    </button>
+                    <a href="https://github.com/K3rhos/RDR-PC-Natives-DB/blob/main/Natives.h" target="_blank"
+                        class="btn-secondary"
+                        style="text-decoration:none;flex:1;display:flex;align-items:center;justify-content:center;gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                        Open raw
+                    </a>
+                </div>
+                <a href="./generate.html" class="btn-secondary"
+                    style="width:100%; text-decoration: none; text-align: center;">Generate</a>
+                <button class="btn-secondary" id="creditsBtn" style="width:100%;">Credits</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div>
+                    <div id="breadcrumb" style="font-size:13px;color:var(--muted)">Namespaces</div>
+                    <div style="font-size:20px;font-weight:800">Native Browsers</div>
+                </div>
+                <div class="controls">
+                    <label class="switch-container">
+                        <input type="checkbox" id="themeSwitch">
+                        <div class="switch">
+                            <div class="switch__icon switch__icon--dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                                </svg>
+                            </div>
+                            <div class="switch__icon switch__icon--light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="4"></circle>
+                                    <path d="M12 2v2"></path>
+                                    <path d="M12 20v2"></path>
+                                    <path d="m4.93 4.93 1.41 1.41"></path>
+                                    <path d="m17.66 17.66 1.41 1.41"></path>
+                                    <path d="M2 12h2"></path>
+                                    <path d="M20 12h2"></path>
+                                    <path d="m4.93 19.07 1.41-1.41"></path>
+                                    <path d="m17.66 6.34 1.41-1.41"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </label>
+                    <input id="filterInput" placeholder="Filter in the namespace..." class="custom-input" />
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="showAllCheckbox">
+                        <span class="checkmark"></span>
+                        <span>Show All</span>
+                    </label>
+                </div>
+            </div>
+
+            <section class="panel" id="panel">
+                <div id="panelContent">Select a namespace in the left column to display its natives.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <div id="modalTitle" style="font-weight:800;color:var(--accent)"></div>
+                    <div id="modalHash" style="font-family:monospace;color:var(--muted);margin-top:6px"></div>
+                </div>
+                <div>
+                    <button class="close" id="modalClose" title="Close">✕</button>
+                </div>
+            </div>
+            <div id="modalBody" style="margin-top:14px;color:var(--muted);"></div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    <script src="../js/script.js"></script>
+    <div id="creditsModal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div style="font-weight:800;color:var(--accent)">Credits</div>
+                <div>
+                    <button class="close" id="creditsModalClose" title="Close">✕</button>
+                </div>
+            </div>
+            <div style="margin-top:14px;color:var(--muted);">
+                <ul style="list-style:none;padding-left:10px;">
+                    <li>- Vey</li>
+                    <li>- <a href="https://k3rhos.me/" target="_blank" class="credit-link">K3rhos (for data)</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
