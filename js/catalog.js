@@ -233,23 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePanelContent(() => html);
     }
 
-    function showNotification(message, type = 'info', duration = 3000) {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        const notif = document.createElement('div');
-        notif.className = `notification ${type}`;
-        notif.textContent = message;
-        container.appendChild(notif);
-
-        setTimeout(() => notif.classList.add('show'), 10);
-
-        setTimeout(() => {
-            notif.classList.remove('show');
-            notif.addEventListener('transitionend', () => notif.remove());
-        }, duration);
-    }
-
     window.copyToClipboard = function (evt, text, type) {
         evt.stopPropagation();
         if (!navigator.clipboard) {
@@ -308,25 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function applyTheme(theme) {
-        if (theme === 'light') {
-            document.body.classList.add('light-theme');
-            if (themeSwitch) themeSwitch.checked = true;
-        } else {
-            document.body.classList.remove('light-theme');
-            if (themeSwitch) themeSwitch.checked = false;
-        }
-    }
-
-    if (themeSwitch) themeSwitch.addEventListener('change', (e) => {
-        const newTheme = e.target.checked ? 'light' : 'dark';
-        localStorage.setItem('theme', newTheme);
-        applyTheme(newTheme);
-    });
-
     if (modalClose) modalClose.addEventListener('click', () => closeModal());
     if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    applyTheme(localStorage.getItem('theme') || 'dark');
     loadCatalog();
 });

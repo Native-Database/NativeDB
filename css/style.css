@@ -757,3 +757,54 @@ body.light-theme .notification {
     color: var(--accent);
     text-align: left;
 }
+
+.converter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.converter-grid label {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.converter-grid .custom-input {
+    width: 100%;
+}
+
+.input-with-copy {
+    position: relative;
+    display: flex;
+}
+
+.input-with-copy .custom-input {
+    padding-right: 42px;
+}
+
+.copy-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    width: 40px;
+    border-radius: 0 8px 8px 0;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.copy-btn svg {
+    width: 16px;
+    height: 16px;
+}

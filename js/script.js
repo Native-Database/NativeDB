@@ -316,23 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.closeModal = function () { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
 
-    function showNotification(message, type = 'info', duration = 3000) {
-        const container = document.getElementById('notification-container');
-        if (!container) return;
-
-        const notif = document.createElement('div');
-        notif.className = `notification ${type}`;
-        notif.textContent = message;
-        container.appendChild(notif);
-
-        setTimeout(() => notif.classList.add('show'), 10);
-
-        setTimeout(() => {
-            notif.classList.remove('show');
-            notif.addEventListener('transitionend', () => notif.remove());
-        }, duration);
-    }
-
     window.copyToClipboard = function (evt, text, type) {
         evt.stopPropagation();
         navigator.clipboard?.writeText(text)
@@ -491,16 +474,6 @@ document.addEventListener('DOMContentLoaded', () => {
         creditsModal.addEventListener('click', (e) => { if (e.target === creditsModal) closeCreditsModal(); });
     }
 
-    function applyTheme(theme) {
-        if (theme === 'light') {
-            document.body.classList.add('light-theme');
-            if (themeSwitch) themeSwitch.checked = true;
-        } else {
-            document.body.classList.remove('light-theme');
-            if (themeSwitch) themeSwitch.checked = false;
-        }
-    }
-
     function applyRedhookToggleState() {
         if (redhookToggle) {
             const showRedhook = localStorage.getItem('showRedhook') !== 'false';
@@ -516,13 +489,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (themeSwitch) themeSwitch.addEventListener('change', (e) => {
-        const newTheme = e.target.checked ? 'light' : 'dark';
-        localStorage.setItem('theme', newTheme);
-        applyTheme(newTheme);
-    });
-
-    applyTheme(localStorage.getItem('theme') || 'dark');
     applyRedhookToggleState();
     applyShowAllState();
     createCreditsModal();
