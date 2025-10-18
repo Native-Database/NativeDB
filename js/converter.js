@@ -130,20 +130,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 const decodedInput = document.getElementById('url-decoded-input');
                 const encodedInput = document.getElementById('url-encoded-input');
 
-                decodedInput.addEventListener('input', () => {
+                function encodeUrl(text) {
+                    if (!text) return '';
                     try {
-                        encodedInput.value = decodedInput.value ? encodeURIComponent(decodedInput.value) : '';
+                        return encodeURIComponent(text);
                     } catch (e) {
-                        encodedInput.value = 'Invalid input for URL encoding.';
+                        return 'Invalid input for URL encoding.';
                     }
+                }
+
+                function decodeUrl(text) {
+                    if (!text) return '';
+                    try {
+                        return decodeURIComponent(text);
+                    } catch (e) {
+                        return 'Invalid URL encoded string.';
+                    }
+                }
+
+                decodedInput.addEventListener('input', () => {
+                    encodedInput.value = encodeUrl(decodedInput.value);
                 });
 
                 encodedInput.addEventListener('input', () => {
-                    try {
-                        decodedInput.value = encodedInput.value ? decodeURIComponent(encodedInput.value) : '';
-                    } catch (e) {
-                        decodedInput.value = 'Invalid URL encoded string.';
-                    }
+                    decodedInput.value = decodeUrl(encodedInput.value);
                 });
             }
         },

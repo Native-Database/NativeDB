@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const CATALOG_URL = '../catalog/netCatalog.json';
+    const CATALOG_URL = 'https://raw.githubusercontent.com/Vey-vy/net-Catalog/main/netCatalog.json';
 
     const categoriesEl = document.getElementById('categories');
     const panelContent = document.getElementById('panelContent');

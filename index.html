@@ -97,14 +97,20 @@
                 <p style="font-size: 0.9rem; color: var(--muted, #9fb0bb); margin:0;">Add our powerful bot to your
                     Discord server for quick native lookups.</p>
                 <div class="card-actions">
-                    <a href="https://discord.com/oauth2/authorize?client_id=1428793215938592809&permissions=8&integration_type=0&scope=bot+applications.commands"
-                        class="btn" style="text-decoration: none;">Add Bot</a>
+                    <a href="#" id="add-bot-link" class="btn" style="text-decoration: none;">Add Bot</a>
                     <a href="https://discord.gg/cyNP2bn9xE" target="_blank" class="btn-secondary"
                         style="text-decoration: none;">Join Server</a>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('add-bot-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            const url = atob('aHR0cHM6Ly9kaXNjb3JkLmNvbS9vYXV0aDIvYXV0aG9yaXplP2NsaWVudF9pZD0xNDI4NzkzMjE1OTM4NTkyODA5JnBlcm1pc3Npb25zPTgmaW50ZWdyYXRpb25fdHlwZT0wJnNjb3BlPWJvdCthcHBsaWNhdGlvbnMuY29tbWFuZHM=');
+            window.open(url, '_blank');
+        });
+    </script>
 </body>
 
 </html>
