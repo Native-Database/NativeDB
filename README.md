@@ -29,8 +29,8 @@ A collection of developer utilities including:
 Browse the GTA Online network catalog with comprehensive information about items, prices, and properties.
 
 ### **Discord Community**
-- Add our powerful bot to your Discord server for quick native lookups
-- Join the community server to connect with other developers
+- [Server](https://discord.gg/cyNP2bn9xE)
+- [Bot](aHR0cHM6Ly9kaXNjb3JkLmNvbS9vYXV0aDIvYXV0aG9yaXplP2NsaWVudF9pZD0xNDI4NzkzMjE1OTM4NTkyODA5JnBlcm1pc3Npb25zPTgmaW50ZWdyYXRpb25fdHlwZT0wJnNjb3BlPWJvdCthcHBsaWNhdGlvbnMuY29tbWFuZHM)
 
 ## Architecture
 
@@ -48,11 +48,11 @@ Vey is built as a single-page application with multiple specialized modules:
 ### Native Browser
 ![Native Browser](./screen/native.png)
 
-### Converter Tools
-![Converter](./screen/converter.png)
-
 ### Native Generator
 ![Native Generator](./screen/generate.png)
+
+### Converter Tools
+![Converter](./screen/converter.png)
 
 ## Community
 
@@ -60,3 +60,7 @@ Vey is built as a single-page application with multiple specialized modules:
 - **Discord**: https://discord.gg/cyNP2bn9xE
 - Open source project welcoming contributions
 
+## Credits
+
+- **K3rhos** - Data for GTAV & RDR2
+- **Alloc8or** - Data for RDR
