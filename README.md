@@ -62,5 +62,5 @@ Vey is built as a single-page application with multiple specialized modules:
 
 ## Credits
 
-- **K3rhos** - Data for GTAV & RDR2
-- **Alloc8or** - Data for RDR
+- **Alloc8or** - Data for GTAV & RDR2
+- **K3rhos** - Data for RDR
