@@ -1,15 +1,18 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { GAMES, cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import Link from 'next/link';
-import { Copy, Check, ExternalLink, Code } from 'lucide-react';
+import { Copy, Check, ExternalLink, Code, Menu } from 'lucide-react';
 
 export default function NativeExplorerClient() {
   const { gameId } = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const game = GAMES.find(g => g.id === gameId);
 
   const [loading, setLoading] = useState(true);
@@ -24,6 +27,8 @@ export default function NativeExplorerClient() {
   const [searchMode, setSearchMode] = useState('namespace');
   const [returnTypeFilter, setReturnTypeFilter] = useState('');
   const [paramTypeFilter, setParamTypeFilter] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [snippetLang, setSnippetLang] = useState('cpp');
 
   useEffect(() => {
     async function fetchData() {
@@ -45,8 +50,29 @@ export default function NativeExplorerClient() {
         }
 
         setNatives(data);
-        const firstNS = Object.keys(data).sort()[0];
-        setActiveNamespace(firstNS);
+
+        const hashParam = searchParams.get('hash');
+        let found = false;
+
+        if (hashParam) {
+          for (const [ns, nsData] of Object.entries(data)) {
+            const native = Array.isArray(nsData)
+              ? nsData.find(n => n.hash === hashParam)
+              : (nsData[hashParam] ? { ...nsData[hashParam], hash: hashParam } : null);
+
+            if (native) {
+              setSelectedNative(native);
+              setActiveNamespace(ns);
+              found = true;
+              break;
+            }
+          }
+        }
+
+        if (!found) {
+          const firstNS = Object.keys(data).sort()[0];
+          setActiveNamespace(firstNS);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -182,7 +208,6 @@ export default function NativeExplorerClient() {
     let candidates = [];
 
     if (searchMode === 'global' && globalSearchQuery) {
-      // Global search across all namespaces
       Object.entries(natives).forEach(([ns, nsNatives]) => {
         Object.entries(nsNatives).forEach(([hash, data]) => {
           if (data.name.toLowerCase().includes(globalSearchQuery.toLowerCase()) ||
@@ -233,24 +258,60 @@ export default function NativeExplorerClient() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleNativeSelect = (n) => {
+    setSelectedNative(n);
+    // Update URL without reloading page
+    const params = new URLSearchParams(searchParams);
+    params.set('hash', n.hash);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const getSnippet = (lang, native) => {
+    if (!native) return '';
+    const params = native.params || [];
+    const paramNames = Array.isArray(params) ? params.map(p => p.name).join(', ') : '';
+    const paramTyped = Array.isArray(params) ? params.map(p => `${p.type} ${p.name}`).join(', ') : '';
+    const returnType = native.results || native.return_type || 'void';
+
+    switch (lang) {
+      case 'lua':
+        return `-- ${returnType} ${native.name}\n${native.name}(${paramNames})`;
+      case 'csharp':
+        return `// ${returnType} ${native.name}\nFunction.Call(Hash.${native.name}, ${paramNames});`;
+      case 'javascript':
+        return `// ${returnType} ${native.name}\n${native.name}(${paramNames});`;
+      case 'cpp':
+      default:
+        return `${returnType} ${native.name}(${paramTyped});`;
+    }
+  };
+
   if (!game) return <div>Game not found</div>;
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       <Navbar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         <Sidebar
           namespaces={namespaces}
           activeNamespace={activeNamespace}
           onNamespaceSelect={setActiveNamespace}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
         />
 
         <main className="flex-1 flex flex-col min-w-0 bg-background/30">
           <div className="p-4 border-b border-border glass">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
+                <button
+                  className="md:hidden p-2 -ml-2 hover:bg-white/10 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(true)}
+                >
+                  <Menu size={20} />
+                </button>
                 <h2 className="text-lg font-bold text-primary whitespace-nowrap">
                   {searchMode === 'global' ? 'Global Search' : activeNamespace}
                 </h2>
@@ -304,7 +365,7 @@ export default function NativeExplorerClient() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            {/* <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted">Filters:</span>
                 <input
@@ -330,7 +391,7 @@ export default function NativeExplorerClient() {
                   </button>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
@@ -339,7 +400,7 @@ export default function NativeExplorerClient() {
             ) : filteredNatives.map((n) => (
               <div
                 key={n.hash}
-                onClick={() => setSelectedNative(n)}
+                onClick={() => handleNativeSelect(n)}
                 className={cn(
                   "p-3 rounded-lg border transition-all cursor-pointer group hover:shadow-sm",
                   selectedNative?.hash === n.hash
@@ -442,30 +503,32 @@ export default function NativeExplorerClient() {
                 <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Code Snippet</h4>
                 <div className="bg-background/50 rounded-lg p-3 border border-border">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-muted">C++</span>
+                    <div className="flex gap-2">
+                      {['cpp', 'csharp', 'lua', 'javascript'].map(lang => (
+                        <button
+                          key={lang}
+                          onClick={() => setSnippetLang(lang)}
+                          className={cn(
+                            "text-[10px] uppercase font-bold px-2 py-1 rounded transition-colors",
+                            snippetLang === lang
+                              ? "bg-primary/20 text-primary"
+                              : "text-muted hover:text-foreground hover:bg-white/5"
+                          )}
+                        >
+                          {lang === 'javascript' ? 'JS' : lang === 'csharp' ? 'C#' : lang}
+                        </button>
+                      ))}
+                    </div>
                     <button
-                      onClick={() => handleCopy(`${selectedNative.results || selectedNative.return_type || 'void'} ${selectedNative.name}(${Array.isArray(selectedNative.params) ? selectedNative.params.map(p => `${p.type} ${p.name}`).join(', ') : ''});`)}
+                      onClick={() => handleCopy(getSnippet(snippetLang, selectedNative))}
                       className="text-xs hover:text-primary transition-colors"
                     >
                       {copied ? <Check size={12} /> : <Copy size={12} />}
                     </button>
                   </div>
-                  <div className="font-mono text-sm overflow-x-auto">
-                    <span className="text-blue-400">{selectedNative.results || selectedNative.return_type || 'void'}</span>{' '}
-                    <span className="text-primary">{selectedNative.name}</span>
-                    <span className="text-muted">(</span>
-                    {Array.isArray(selectedNative.params) && selectedNative.params.length > 0 ? (
-                      selectedNative.params.map((p, i) => (
-                        <span key={i}>
-                          <span className="text-orange-400">{p.type}</span> <span className="text-foreground">{p.name}</span>
-                          {i < selectedNative.params.length - 1 && <span className="text-muted">, </span>}
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-muted">void</span>
-                    )}
-                    <span className="text-muted">);</span>
-                  </div>
+                  <pre className="font-mono text-sm overflow-x-auto whitespace-pre-wrap text-muted">
+                    {getSnippet(snippetLang, selectedNative)}
+                  </pre>
                 </div>
               </section>
 
