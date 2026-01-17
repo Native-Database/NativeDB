@@ -1,5 +1,3 @@
 {
-  "/page": "app/page.js",
-  "/native/[gameId]/page": "app/native/[gameId]/page.js",
-  "/converter/page": "app/converter/page.js"
+  "/page": "app/page.js"
 }
