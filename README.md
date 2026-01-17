@@ -1,10 +1,6 @@
 <div align="center">
   <h1>NativeDB</h1>
   <p>A powerful and fast database explorer for game natives and development tools.</p>
-
-  [![License](https://img.shields.io/github/license/Native-Database/NativeDB)](https://github.com/Native-Database/NativeDB/blob/main/LICENSE)
-  [![Discord](https://img.shields.io/discord/822837332244234290?color=%237289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/cyNP2bn9xE)
-  [![GitHub Stars](https://img.shields.io/github/stars/Native-Database/NativeDB?style=social)](https://github.com/Native-Database/NativeDB/stargazers)
 </div>
 
 > NativeDB is a modern web-based application designed to simplify the exploration of native function databases for game developers. Whether you're working with GTA V, Red Dead Redemption 2, or other games, NativeDB provides an intuitive interface to discover and utilize native functions.
