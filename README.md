@@ -1,46 +1,37 @@
-# Vey - NativeDB
+<div align="center">
+  <h1>NativeDB</h1>
+  <p>A powerful and fast database explorer for game natives and development tools.</p>
 
-A powerful and fast database explorer for game natives and development tools. Vey provides a comprehensive interface to explore, search, and generate C++ headers for native functions across multiple gaming platforms.
+  [![License](https://img.shields.io/github/license/Native-Database/NativeDB)](https://github.com/Native-Database/NativeDB/blob/main/LICENSE)
+  [![Discord](https://img.shields.io/discord/822837332244234290?color=%237289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/cyNP2bn9xE)
+  [![GitHub Stars](https://img.shields.io/github/stars/Native-Database/NativeDB?style=social)](https://github.com/Native-Database/NativeDB/stargazers)
+</div>
 
-## Overview
+> NativeDB is a modern web-based application designed to simplify the exploration of native function databases for game developers. Whether you're working with GTA V, Red Dead Redemption 2, or other games, NativeDB provides an intuitive interface to discover and utilize native functions.
 
-Vey is a modern web-based application designed to simplify the exploration of native function databases for game developers. Whether you're working with GTA V, Red Dead Redemption 2, or the original Red Dead Redemption, Vey provides an intuitive interface to discover and utilize native functions.
+## 📋 Table of Contents
 
-## Features
+- [✨ Features](#-features)
+- [📸 Screenshots](#-screenshots)
+- [🚀 Getting Started](#-getting-started)
+- [🤝 Community & Contributing](#-community--contributing)
+- [📝 Changelog](#-changelog)
+- [🙏 Credits](#-credits)
 
-### **Native Browsers**
-- **GTA V Natives**: Explore the complete native function database for Grand Theft Auto V with organized namespaces
-- **RDR2 Natives**: Browse the native function database for Red Dead Redemption 2
-- **RDR Natives**: Access the native function database for the original Red Dead Redemption
+## ✨ Features
 
-Each namespace contains detailed information about functions including parameters, return types, and descriptions.
+- **🎮 Multi-Game Support**: Explore native function databases for:
+  - Grand Theft Auto V
+  - Grand Theft Auto IV
+  - Red Dead Redemption 2
+  - Red Dead Redemption
+  - Max Payne 3
+- **💻 Native Generator**: Generate C++ header files from selected namespaces.
+- **🛠️ Converter Tools**: A collection of developer utilities including number conversion, Base64 encoding, URL encoding, and hashing.
+- **🔍 Powerful Search**: Quickly find natives by name or hash across all namespaces.
+- **🌑 Modern UI**: Responsive dark-themed UI with a sleek design.
 
-### **Native Generator**
-Generate C++ header files from selected namespaces. Choose which namespaces to include and customize the output format for your specific development needs.
-
-### **Converter Tools**
-A collection of developer utilities including:
-- **Number Converter**: Convert between different number formats
-- **Text ↔ Base64**: Encode and decode text to/from Base64
-- **URL Encoder/Decoder**: Encode and decode URLs
-- **Hash Generator**: Generate various hash formats
-
-### **Net Catalog**
-Browse the GTA Online network catalog with comprehensive information about items, prices, and properties.
-
-### **Discord Community**
-- [Server](https://discord.gg/cyNP2bn9xE)
-- [Bot](aHR0cHM6Ly9kaXNjb3JkLmNvbS9vYXV0aDIvYXV0aG9yaXplP2NsaWVudF9pZD0xNDI4NzkzMjE1OTM4NTkyODA5JnBlcm1pc3Npb25zPTgmaW50ZWdyYXRpb25fdHlwZT0wJnNjb3BlPWJvdCthcHBsaWNhdGlvbnMuY29tbWFuZHM)
-
-## Architecture
-
-Vey is built as a single-page application with multiple specialized modules:
-- Native Browser modules for efficient database exploration
-- Conversion utilities for developer workflows
-- Generation tools for C++ development
-- Responsive dark-themed UI with aurora background effects
-
-## Screenshots
+## 📸 Screenshots
 
 ### Home Page
 ![Home Page](./screen/home.png)
@@ -54,13 +45,23 @@ Vey is built as a single-page application with multiple specialized modules:
 ### Converter Tools
 ![Converter](./screen/converter.png)
 
-## Community
+## 🤝 Community & Contributing
 
-- **GitHub**: https://github.com/Vey-vy/NativeDB
-- **Discord**: https://discord.gg/cyNP2bn9xE
-- Open source project welcoming contributions
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-## Credits
+- **GitHub**: [https://github.com/Native-Database/NativeDB](https://github.com/Native-Database/NativeDB)
+- **Discord**: [https://discord.gg/cyNP2bn9xE](https://discord.gg/cyNP2bn9xE)
+
+## 📝 Changelog
+
+**Jan 17, 2026**
+- Updated project name from "Vey DB" to "NativeDB" across the application.
+- Page titles are now dynamic, showing the current game (e.g., "NativeDB / GTA V").
+- Added breadcrumbs to the navigation bar for easier site navigation.
+- Added a Discord card to the homepage with "Add Bot" and "Join Server" links.
+- Updated Discord bot link.
+
+## 🙏 Credits
 
 - **Alloc8or** - Data for GTAV & RDR2
 - **K3rhos** - Data for RDR
