@@ -60,4 +60,3 @@ Contributions are what make the open source community such an amazing place to l
 ## 🙏 Credits
 
 - **Alloc8or** - Data for GTAV & RDR2
-- **K3rhos** - Data for RDR
