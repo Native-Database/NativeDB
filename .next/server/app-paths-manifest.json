@@ -1,5 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/native/[gameId]/page": "app/native/[gameId]/page.js",
-  "/generate/[gameId]/page": "app/generate/[gameId]/page.js"
-}

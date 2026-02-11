@@ -52,7 +52,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/rdr', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/rdr', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/K3rhos/RDR-PC-Natives-DB/main/Natives.h',
+    url: 'https://raw.githubusercontent.com/Native-Database/Red-Dead-Redemption/refs/heads/master/natives.h',
     type: 'header'
   },
   {
@@ -65,7 +65,8 @@ export const GAMES = [
       { type: 'internal', href: '/native/mp3', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/mp3', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/alloc8or/mp3-nativedb-data/master/natives.json'
+    url: 'https://raw.githubusercontent.com/Native-Database/Max-Payne-3/refs/heads/master/natives.h',
+    type: 'header'
   },
   {
     id: 'gta4',
@@ -77,8 +78,8 @@ export const GAMES = [
       { type: 'internal', href: '/native/gta4', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/gta4', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/ThirteenAG/GTAIV.EFLC.FusionFix/master/source/natives.ixx',
-    type: 'cpp_class'
+    url: 'https://raw.githubusercontent.com/Native-Database/Grand-Theft-Auto-IV/refs/heads/master/natives.h',
+    type: 'header'
   },
   {
     id: 'converter',
