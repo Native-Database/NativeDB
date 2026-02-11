@@ -11,7 +11,6 @@
 - [📸 Screenshots](#-screenshots)
 - [🚀 Getting Started](#-getting-started)
 - [🤝 Community & Contributing](#-community--contributing)
-- [📝 Changelog](#-changelog)
 - [🙏 Credits](#-credits)
 
 ## ✨ Features
@@ -47,15 +46,6 @@ Contributions are what make the open source community such an amazing place to l
 
 - **GitHub**: [https://github.com/Native-Database/NativeDB](https://github.com/Native-Database/NativeDB)
 - **Discord**: [https://discord.gg/cyNP2bn9xE](https://discord.gg/cyNP2bn9xE)
-
-## 📝 Changelog
-
-**Jan 17, 2026**
-- Updated project name from "Vey DB" to "NativeDB" across the application.
-- Page titles are now dynamic, showing the current game (e.g., "NativeDB / GTA V").
-- Added breadcrumbs to the navigation bar for easier site navigation.
-- Added a Discord card to the homepage with "Add Bot" and "Join Server" links.
-- Updated Discord bot link.
 
 ## 🙏 Credits
 
