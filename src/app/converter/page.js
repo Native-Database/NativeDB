@@ -511,10 +511,10 @@ function JoaatConverter({ onCopy, copied }) {
       }
 
       // Try to lookup from GTA V natives database
-      // This is a simplified lookup - in a real implementation you'd have a comprehensive database
-      const response = await fetch(`https://raw.githubusercontent.com/alloc8or/gta5-nativedb-data/master/natives.json`);
+      const response = await fetch('/api/natives?game=gta5');
       if (response.ok) {
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.natives || {};
         let found = false;
 
         // Search through all namespaces

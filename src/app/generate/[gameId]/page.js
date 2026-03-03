@@ -25,21 +25,11 @@ export default function GeneratePage() {
       if (!game) return;
       setLoading(true);
       try {
-        const response = await fetch(game.url);
+        const response = await fetch(`/api/natives?game=${gameId}&limit=10000`);
         if (!response.ok) throw new Error('Failed to fetch data');
 
-        let data;
-        if (game.type === 'header') {
-          const text = await response.text();
-          data = buildMapFromH(text);
-        } else if (game.type === 'cpp_class') {
-          const text = await response.text();
-          data = parseCppClass(text);
-        } else {
-          data = await response.json();
-          data = buildMap(data);
-        }
-
+        const result = await response.json();
+        const data = result.natives || {};
         setNativesMap(data);
       } catch (err) {
         setError(err.message);

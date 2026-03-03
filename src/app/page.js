@@ -40,13 +40,13 @@ export default function Home() {
                 <p className="text-sm text-muted">{game.description}</p>
                 <div className="flex gap-2 mt-4">
                   <Link
-                    href={game.id === 'discord' ? '/bot' : game.id === 'converter' ? '/converter' : `/native/${game.id}`}
+                    href={game.id === 'discord' ? '/bot' : game.id === 'converter' ? '/converter' : game.id === 'rockstar' ? '/rockstar' : `/native/${game.id}`}
                     className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"
                   >
                     <Database size={14} />
                     Browse
                   </Link>
-                  {game.id !== 'discord' && game.id !== 'converter' && (
+                  {game.id !== 'discord' && game.id !== 'converter' && game.id !== 'rockstar' && (
                     <Link
                       href={`/generate/${game.id}`}
                       className="bg-surface hover:bg-surface/80 border border-border rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"

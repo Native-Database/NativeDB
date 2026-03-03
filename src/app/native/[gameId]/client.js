@@ -35,19 +35,11 @@ export default function NativeExplorerClient() {
       if (!game) return;
       setLoading(true);
       try {
-        const response = await fetch(game.url);
+        const response = await fetch(`/api/natives?game=${gameId}&limit=10000`);
         if (!response.ok) throw new Error('Failed to fetch data');
 
-        let data;
-        if (game.type === 'header') {
-          const text = await response.text();
-          data = parseHeader(text);
-        } else if (game.type === 'cpp_class') {
-          const text = await response.text();
-          data = parseCppClass(text);
-        } else {
-          data = await response.json();
-        }
+        const result = await response.json();
+        const data = result.natives || {};
 
         setNatives(data);
 
@@ -150,12 +142,10 @@ export default function NativeExplorerClient() {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
 
-      // Look for function definitions (single line format from the excerpt)
       const funcMatch = line.match(/static\s+inline\s+auto\s+(\w+)\s*\(([^)]*)\)\s*\{\s*return\s+NativeInvoke::Invoke<[^,]+,\s*std::to_underlying\(NativeHashes::(\w+)\),\s*([^>]+)>/);
       if (funcMatch) {
         const [, funcName, params, hashName, returnType] = funcMatch;
 
-        // Get the hash value
         const hash = hashes[hashName];
         if (!hash) continue;
 

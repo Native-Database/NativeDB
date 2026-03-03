@@ -52,7 +52,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/rdr', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/rdr', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Red-Dead-Redemption/refs/heads/master/natives.h',
+    url: 'https://raw.githubusercontent.com/Native-Database/Red-Dead-Redemption/master/natives.h',
     type: 'header'
   },
   {
@@ -65,7 +65,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/mp3', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/mp3', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Max-Payne-3/refs/heads/master/natives.h',
+    url: 'https://raw.githubusercontent.com/Native-Database/Max-Payne-3/master/natives.h',
     type: 'header'
   },
   {
@@ -78,7 +78,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/gta4', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/gta4', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Grand-Theft-Auto-IV/refs/heads/master/natives.h',
+    url: 'https://raw.githubusercontent.com/Native-Database/Grand-Theft-Auto-IV/master/natives.h',
     type: 'header'
   },
   {
@@ -101,6 +101,17 @@ export const GAMES = [
     links: [
       { type: 'external', href: 'https://discord.com/oauth2/authorize?client_id=1428793215938592809&permissions=8&integration_type=0&scope=bot+applications.commands', label: 'Add Bot', icon: 'Cpu' },
       { type: 'external', href: 'https://discord.gg/cyNP2bn9xE', label: 'Join Server', icon: 'Users' },
+    ],
+  },
+  {
+    id: 'rockstar',
+    name: 'Rockstar',
+    description: 'Rockstar ID tools: Avatar lookup and more.',
+    detailedDescription: 'Retrieve profile avatars from Rockstar Social Club IDs. Useful for checking player profiles and getting avatar images.',
+    icon: 'User',
+    color: 'text-red-400',
+    links: [
+      { type: 'internal', href: '/rockstar', label: 'Open Tools', icon: 'User' },
     ],
   },
   // {
