@@ -343,31 +343,31 @@ export default function GeneratePage() {
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 flex flex-col bg-background/30">
-          <div className="p-6 border-b border-border">
-            <div className="flex items-center justify-between">
-              <div>
+          <div className="p-4 border-b border-border sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold">
                     G
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gradient">Generate Header</h1>
-                    <p className="text-sm text-muted">{game.name} Natives</p>
+                  <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-gradient sm:text-2xl">Generate Header</h1>
+                    <p className="text-xs text-muted sm:text-sm">{game.name} Natives</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted max-w-2xl">
+                <p className="text-xs text-muted max-w-2xl sm:text-sm">
                   Select namespaces and configure options to generate a C++ header file with native function declarations.
                 </p>
               </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-primary">{selectedNamespaces.size}</div>
-                <div className="text-sm text-muted">namespaces selected</div>
+              <div className="text-left sm:text-right">
+                <div className="text-xl font-bold text-primary sm:text-2xl">{selectedNamespaces.size}</div>
+                <div className="text-xs text-muted sm:text-sm">namespaces selected</div>
               </div>
             </div>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar">
-            <div className="p-6 space-y-8">
+            <div className="p-4 space-y-6 sm:p-6 sm:space-y-8">
               {loading ? (
                 <div className="flex items-center justify-center h-64 text-muted">Loading natives...</div>
               ) : error ? (
@@ -375,8 +375,8 @@ export default function GeneratePage() {
               ) : (
                 <>
                   {/* Configuration Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="glass rounded-xl p-6">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+                    <div className="glass rounded-xl p-4 sm:p-6">
                       <h3 className="font-semibold mb-4 flex items-center gap-2">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
                         Code Style
@@ -409,7 +409,7 @@ export default function GeneratePage() {
                       </div>
                     </div>
 
-                    <div className="glass rounded-xl p-6">
+                    <div className="glass rounded-xl p-4 sm:p-6">
                       <h3 className="font-semibold mb-4 flex items-center gap-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                         Optimizations
@@ -432,7 +432,7 @@ export default function GeneratePage() {
                       </div>
                     </div>
 
-                    <div className="glass rounded-xl p-6">
+                    <div className="glass rounded-xl p-4 sm:p-6">
                       <h3 className="font-semibold mb-4 flex items-center gap-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         Quick Actions
@@ -468,21 +468,21 @@ export default function GeneratePage() {
                   </div>
 
                   {/* Namespaces Section */}
-                  <div className="glass rounded-xl p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold">Namespaces</h3>
-                      <div className="relative">
+                  <div className="glass rounded-xl p-4 sm:p-6">
+                    <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
+                      <h3 className="text-base font-semibold sm:text-lg">Namespaces</h3>
+                      <div className="relative w-full sm:w-auto">
                         <input
                           type="text"
                           placeholder="Filter namespaces..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-64 bg-background border border-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary/50"
+                          className="w-full bg-background border border-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary/50 sm:w-64"
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                       {namespaces.map(ns => (
                         <label key={ns} className="group cursor-pointer">
                           <div className={cn(

@@ -16,31 +16,31 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-6xl mx-auto w-full">
-        <div className="space-y-4 mb-12">
-          <h1 className="text-6xl md:text-8xl font-black tracking-tight text-gradient">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 text-center max-w-6xl mx-auto w-full">
+        <div className="space-y-4 mb-8 sm:mb-12">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tight text-gradient">
             NativeDB
           </h1>
-          <p className="text-xl md:text-2xl text-muted max-w-2xl mx-auto font-light">
+          <p className="text-base sm:text-xl md:text-2xl text-muted max-w-2xl mx-auto font-light">
             A fast and powerful database explorer for game natives and more.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
           {games.map((game) => (
             <div
               key={game.id}
-              className="group p-6 glass rounded-2xl border border-border hover:border-primary/30 transition-all hover:scale-[1.02] active:scale-[0.98] text-left relative overflow-hidden"
+              className="group p-5 sm:p-6 glass rounded-2xl border border-border hover:border-primary/30 transition-all hover:scale-[1.02] active:scale-[0.98] text-left relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 {game.id === 'discord' ? <DiscordIcon /> : <Database size={80} />}
               </div>
               <div className="relative z-10">
-                <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 flex items-center gap-2">
                   {game.name} <ArrowRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                 </h3>
                 <p className="text-sm text-muted">{game.description}</p>
-                <div className="flex gap-2 mt-4">
+                <div className="flex flex-col gap-2 mt-4 sm:flex-row">
                   <Link
                     href={game.id === 'discord' ? '/bot' : game.id === 'converter' ? '/converter' : game.id === 'rockstar' ? '/rockstar' : `/native/${game.id}`}
                     className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"

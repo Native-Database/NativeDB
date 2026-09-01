@@ -3,6 +3,7 @@ import {NextResponse} from 'next/server';
 
 const GAME_URLS = {
   gta5: {url: process.env.GTAV, type: 'json'},
+  gta5ee: {url: process.env.GTAVEE, type: 'json'},
   rdr2: {url: process.env.RDR2, type: 'json'},
   rdr: {url: process.env.RDR, type: 'header'},
   mp3: {url: process.env.MP3, type: 'header'},

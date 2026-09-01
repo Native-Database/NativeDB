@@ -1,7 +1,7 @@
 <games>
   <game id="gta5">
     <name>GTA V</name>
-    <description>Grand Theft Auto V Natives</description>
+    <description>Grand Theft Auto V Script Commands</description>
     <detailedDescription>Explore and generate native function calls for Grand Theft Auto V. This database provides detailed information on game internals.</detailedDescription>
     <icon>Database</icon>
     <url>process.env.GTAV</url>
@@ -11,9 +11,21 @@
     </links>
   </game>
 
+  <game id="gta5ee">
+    <name>GTA V Enhanced</name>
+    <description>Grand Theft Auto V Enhanced Script Commands</description>
+    <detailedDescription>Explore and generate native function calls for Grand Theft Auto V Enhanced. This database provides detailed information on game internals.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.GTAVEE</url>
+    <links>
+      <link type="internal" href="/native/gta5ee" label="Open" icon="Database" />
+      <link type="internal" href="/generate/gta5ee" label="Export" icon="Code" />
+    </links>
+  </game>
+
   <game id="rdr2">
     <name>RDR 2</name>
-    <description>Red Dead Redemption 2 Natives</description>
+    <description>Red Dead Redemption 2 Script Commands</description>
     <detailedDescription>Dive into the native functions of Red Dead Redemption 2. Essential for modding and understanding game mechanics.</detailedDescription>
     <icon>Database</icon>
     <url>process.env.RDR2</url>
@@ -25,7 +37,7 @@
 
   <game id="rdr" type="header">
     <name>RDR</name>
-    <description>Red Dead Redemption Natives</description>
+    <description>Red Dead Redemption Script Commands</description>
     <detailedDescription>Access native functions for the original Red Dead Redemption. Useful for preservation and exploration.</detailedDescription>
     <icon>Database</icon>
     <url>process.env.RDR</url>
@@ -37,7 +49,7 @@
 
   <game id="mp3" type="header">
     <name>Max Payne 3</name>
-    <description>Max Payne 3 Natives</description>
+    <description>Max Payne 3 Script Commands</description>
     <detailedDescription>Explore the native database for Max Payne 3. Provides insights into the game engine and scripting.</detailedDescription>
     <icon>Database</icon>
     <url>process.env.MP3</url>
@@ -49,7 +61,7 @@
 
   <game id="gta4" type="header">
     <name>GTA IV</name>
-    <description>Grand Theft Auto IV Natives</description>
+    <description>Grand Theft Auto IV Script Commands</description>
     <detailedDescription>Investigate native functions for Grand Theft Auto IV. A valuable resource for mod developers and enthusiasts.</detailedDescription>
     <icon>Database</icon>
     <url>process.env.GTAIV</url>
