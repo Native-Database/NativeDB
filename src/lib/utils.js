@@ -52,7 +52,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/rdr', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/rdr', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Red-Dead-Redemption/master/natives.h',
+    url: 'https://cdn.veyvy.space/data/scdb/rdr.h',
     type: 'header'
   },
   {
@@ -65,7 +65,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/mp3', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/mp3', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Max-Payne-3/master/natives.h',
+    url: 'https://cdn.veyvy.space/data/scdb/mp3.h',
     type: 'header'
   },
   {
@@ -78,7 +78,7 @@ export const GAMES = [
       { type: 'internal', href: '/native/gta4', label: 'Browse', icon: 'Database' },
       { type: 'internal', href: '/generate/gta4', label: 'Generate', icon: 'Code' },
     ],
-    url: 'https://raw.githubusercontent.com/Native-Database/Grand-Theft-Auto-IV/master/natives.h',
+    url: 'https://cdn.veyvy.space/data/scdb/gtaIV.h',
     type: 'header'
   },
   {

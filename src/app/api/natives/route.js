@@ -4,9 +4,9 @@ import { GAMES } from '@/lib/utils';
 const GAME_URLS = {
   gta5: { url: 'https://raw.githubusercontent.com/alloc8or/gta5-nativedb-data/master/natives.json', type: 'json' },
   rdr2: { url: 'https://raw.githubusercontent.com/alloc8or/rdr3-nativedb-data/master/natives.json', type: 'json' },
-  rdr: { url: 'https://raw.githubusercontent.com/Native-Database/Red-Dead-Redemption/master/natives.h', type: 'header' },
-  mp3: { url: 'https://raw.githubusercontent.com/Native-Database/Max-Payne-3/master/natives.h', type: 'header' },
-  gta4: { url: 'https://raw.githubusercontent.com/Native-Database/Grand-Theft-Auto-IV/master/natives.h', type: 'header' }
+  rdr: { url: 'https://cdn.veyvy.space/data/scdb/rdr.h', type: 'header' },
+  mp3: { url: 'https://cdn.veyvy.space/data/scdb/mp3.h', type: 'header' },
+  gta4: { url: 'https://cdn.veyvy.space/data/scdb/gtaIV.h', type: 'header' }
 };
 
 const cache = new Map();
@@ -72,35 +72,44 @@ function parseHeaderFile(content) {
       continue;
     }
 
-    const funcMatch = line.match(/^static\s+(\w+)\s+(\w+)\s*\(([^)]*)\)/);
+    const funcMatch = line.match(/^static\s+(?:inline\s+)?(?:auto\s+)?([A-Za-z_][\w:<>&\s\*]*?)\s+(\w+)\s*\(([^)]*)\)/);
     
     if (funcMatch) {
-      const returnType = funcMatch[1];
+      const returnType = funcMatch[1].trim();
       const fnName = funcMatch[2];
       const paramsStr = funcMatch[3];
 
-      const skip = ['if', 'else', 'while', 'for', 'return', 'typedef', 'struct', 'enum', 'static', 'inline', 'const', 'extern'];
-      if (skip.includes(returnType)) {
+      const skip = ['if', 'else', 'while', 'for', 'return', 'typedef', 'struct', 'enum', 'static', 'inline', 'const', 'extern', 'using'];
+      if (skip.includes(returnType) || !fnName) {
         i++;
         continue;
       }
 
       let hash = null;
-      const hashMatch = rawLine.match(/Invoke<0x([0-9A-Fa-f]+)>/);
+      const hashMatch = rawLine.match(/0x[A-Fa-f0-9]{8,16}/);
       if (hashMatch) {
-        hash = '0x' + hashMatch[1].toUpperCase();
+        hash = hashMatch[0].toUpperCase();
       } else {
-        hash = generateHash(fnName);
+        const invokeHashMatch = rawLine.match(/Invoke\s*<\s*(0x[A-Fa-f0-9]{8,16})/i);
+        if (invokeHashMatch) {
+          hash = invokeHashMatch[1].toUpperCase();
+        } else {
+          hash = generateHash(fnName);
+        }
       }
 
       const params = [];
       if (paramsStr.trim()) {
         for (const p of paramsStr.split(',')) {
           const pTrim = p.trim();
-          const pMatch = pTrim.match(/^(?:const\s+)?(\w+)(?:\*|&)?\s+(\w+)$/);
+          if (!pTrim || pTrim === 'void') continue;
+          const pMatch = pTrim.match(/^(?:const\s+)?([A-Za-z_][\w:<>\s\*&]*?)(?:\*|&)?\s+(\w+)$/);
           if (pMatch) {
-            params.push({ type: pMatch[1], name: pMatch[2] });
-          } else if (pTrim) {
+            params.push({ type: pMatch[1].trim(), name: pMatch[2] });
+          } else if (pTrim.includes(' ')) {
+            const parts = pTrim.split(/\s+/);
+            params.push({ type: parts.slice(0, -1).join(' '), name: parts[parts.length - 1] });
+          } else {
             params.push({ type: pTrim, name: 'param' });
           }
         }
@@ -111,6 +120,7 @@ function parseHeaderFile(content) {
         natives[currentNamespace][hash] = {
           name: fnName,
           hash,
+          returns: returnType,
           returnType,
           params,
           type: 'native'
