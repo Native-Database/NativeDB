@@ -1,7 +1,9 @@
-import { GAMES } from '@/lib/utils';
+import { loadGamesServer } from '@/lib/games.server';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { Database, Zap, Cpu, ArrowRight, Code, Users } from 'lucide-react';
+
+const games = await loadGamesServer();
 
 const DiscordIcon = () => (
   <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
@@ -17,7 +19,7 @@ export default function Home() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-6xl mx-auto w-full">
         <div className="space-y-4 mb-12">
           <h1 className="text-6xl md:text-8xl font-black tracking-tight text-gradient">
-            Native Database
+            NativeDB
           </h1>
           <p className="text-xl md:text-2xl text-muted max-w-2xl mx-auto font-light">
             A fast and powerful database explorer for game natives and more.
@@ -25,7 +27,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-          {GAMES.map((game) => (
+          {games.map((game) => (
             <div
               key={game.id}
               className="group p-6 glass rounded-2xl border border-border hover:border-primary/30 transition-all hover:scale-[1.02] active:scale-[0.98] text-left relative overflow-hidden"
@@ -44,7 +46,7 @@ export default function Home() {
                     className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"
                   >
                     <Database size={14} />
-                    Browse
+                    Open
                   </Link>
                   {game.id !== 'discord' && game.id !== 'converter' && game.id !== 'rockstar' && (
                     <Link
@@ -52,7 +54,7 @@ export default function Home() {
                       className="bg-surface hover:bg-surface/80 border border-border rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"
                     >
                       <Code size={14} />
-                      Generate
+                      Export
                     </Link>
                   )}
                   {game.id == 'discord' && (
@@ -61,7 +63,7 @@ export default function Home() {
                       className="bg-surface hover:bg-surface/80 border border-border rounded-lg px-3 py-2 text-sm font-medium transition-all flex items-center justify-center gap-1"
                     >
                       <Users size={14} />
-                      Join Server
+                      Join
                     </Link>
                   )}
                 </div>

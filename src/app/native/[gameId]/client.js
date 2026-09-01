@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { GAMES, cn } from '@/lib/utils';
+import { loadGames, getGameById } from '@/lib/games';
+import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import Link from 'next/link';
@@ -13,7 +14,9 @@ export default function NativeExplorerClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const game = GAMES.find(g => g.id === gameId);
+  const [games, setGames] = useState([]);
+  const [gamesReady, setGamesReady] = useState(false);
+  const game = getGameById(games, gameId);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,6 +32,15 @@ export default function NativeExplorerClient() {
   const [paramTypeFilter, setParamTypeFilter] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [snippetLang, setSnippetLang] = useState('cpp');
+
+  useEffect(() => {
+    async function fetchGames() {
+      const loadedGames = await loadGames();
+      setGames(loadedGames);
+      setGamesReady(true);
+    }
+    fetchGames();
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -276,6 +288,38 @@ export default function NativeExplorerClient() {
     }
   };
 
+  const snippetTheme = {
+    cpp: {
+      tab: 'bg-blue-500/15 text-blue-200 border-blue-500/50 shadow-[0_0_0_1px_rgba(96,165,250,0.25)]',
+      text: 'text-blue-200',
+      panel: 'border-blue-500/35 bg-blue-500/[0.06]',
+      accent: 'text-blue-300',
+      badge: 'bg-blue-500/12 text-blue-200 border border-blue-500/30'
+    },
+    csharp: {
+      tab: 'bg-violet-500/15 text-violet-200 border-violet-500/50 shadow-[0_0_0_1px_rgba(167,139,250,0.25)]',
+      text: 'text-violet-200',
+      panel: 'border-violet-500/35 bg-violet-500/[0.06]',
+      accent: 'text-violet-300',
+      badge: 'bg-violet-500/12 text-violet-200 border border-violet-500/30'
+    },
+    lua: {
+      tab: 'bg-emerald-500/15 text-emerald-200 border-emerald-500/50 shadow-[0_0_0_1px_rgba(52,211,153,0.25)]',
+      text: 'text-emerald-200',
+      panel: 'border-emerald-500/35 bg-emerald-500/[0.06]',
+      accent: 'text-emerald-300',
+      badge: 'bg-emerald-500/12 text-emerald-200 border border-emerald-500/30'
+    },
+    javascript: {
+      tab: 'bg-yellow-500/15 text-yellow-200 border-yellow-500/50 shadow-[0_0_0_1px_rgba(253,224,71,0.25)]',
+      text: 'text-yellow-200',
+      panel: 'border-yellow-500/35 bg-yellow-500/[0.06]',
+      accent: 'text-yellow-300',
+      badge: 'bg-yellow-500/12 text-yellow-200 border border-yellow-500/30'
+    }
+  };
+
+  if (!gamesReady) return <div className="flex items-center justify-center h-screen text-muted">Loading game data...</div>;
   if (!game) return <div>Game not found</div>;
 
   return (
@@ -438,113 +482,122 @@ export default function NativeExplorerClient() {
         </main>
 
         {selectedNative && (
-          <div className="w-96 glass border-l border-border overflow-hidden hidden lg:flex flex-col">
-            <div className="p-6 border-b border-border">
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-xl font-bold text-gradient mb-1 truncate">{selectedNative.name}</h2>
-                  <div className="flex items-center gap-2 text-xs text-muted font-mono">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm p-4">
+            <div className="relative w-full max-w-2xl max-h-[85vh] overflow-hidden rounded-2xl border border-border bg-surface/95 shadow-2xl">
+              <div className="flex items-start justify-between border-b border-border px-5 py-4">
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-2xl font-bold text-gradient">{selectedNative.name}</h2>
+                  <div className="mt-2 flex items-center gap-2 text-xs text-muted font-mono">
                     <span className="truncate">{selectedNative.hash}</span>
                     <button onClick={() => handleCopy(selectedNative.hash)} className="hover:text-primary transition-colors flex-shrink-0">
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                     </button>
                   </div>
                 </div>
+
+                <button
+                  onClick={() => setSelectedNative(null)}
+                  className="ml-4 rounded-lg border border-border bg-background/50 px-2 py-1 text-sm text-muted hover:text-foreground transition-colors"
+                >
+                  Close
+                </button>
               </div>
-            </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-              <section>
-                <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Function Signature</h4>
-                <div className="bg-background/50 rounded-lg p-4 font-mono text-sm border border-border">
-                  <div className="text-blue-400 mb-1">{selectedNative.results || selectedNative.return_type || 'void'}</div>
-                  <div className="text-primary font-medium">{selectedNative.name}</div>
-                  <div className="text-muted mt-2">
-                    <span>(</span>
-                    <div className="ml-4 mt-1 space-y-1">
-                      {Array.isArray(selectedNative.params) && selectedNative.params.length > 0 ? (
-                        selectedNative.params.map((param, i) => (
-                          <div key={i} className="text-sm">
-                            <span className="text-orange-400">{param.type}</span> <span className="text-foreground">{param.name}</span>
-                            {i < selectedNative.params.length - 1 && ','}
-                          </div>
-                        ))
-                      ) : (
-                        <span className="text-muted-foreground">void</span>
-                      )}
-                    </div>
-                    <span>)</span>
-                  </div>
-                </div>
-              </section>
-
-              {selectedNative.comment && (
+              <div className="max-h-[calc(85vh-88px)] overflow-y-auto p-5 space-y-6 custom-scrollbar">
                 <section>
-                  <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Description</h4>
-                  <div className="bg-surface/30 rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted leading-relaxed whitespace-pre-wrap">
-                      {selectedNative.comment}
-                    </p>
+                  <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Signature</h4>
+                  <div className="rounded-xl border border-border bg-background/50 p-4 font-mono text-sm whitespace-nowrap overflow-x-auto">
+                    <span className="text-blue-400">{selectedNative.results || selectedNative.return_type || 'void'}</span>
+                    {' '}
+                    <span className="text-primary font-medium">{selectedNative.name}</span>
+                    (
+                    {Array.isArray(selectedNative.params) && selectedNative.params.length > 0 ? (
+                      selectedNative.params.map((param, i) => (
+                        <span key={i} className="text-muted">
+                          <span className="text-orange-400">{param.type}</span>
+                          {' '}
+                          <span className="text-foreground">{param.name}</span>
+                          {i < selectedNative.params.length - 1 && ', '}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-muted-foreground">void</span>
+                    )}
+                    )
                   </div>
                 </section>
-              )}
 
-              <section>
-                <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Code Snippet</h4>
-                <div className="bg-background/50 rounded-lg p-3 border border-border">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex gap-2">
-                      {['cpp', 'csharp', 'lua', 'javascript'].map(lang => (
-                        <button
-                          key={lang}
-                          onClick={() => setSnippetLang(lang)}
-                          className={cn(
-                            "text-[10px] uppercase font-bold px-2 py-1 rounded transition-colors",
-                            snippetLang === lang
-                              ? "bg-primary/20 text-primary"
-                              : "text-muted hover:text-foreground hover:bg-white/5"
-                          )}
-                        >
-                          {lang === 'javascript' ? 'JS' : lang === 'csharp' ? 'C#' : lang}
-                        </button>
-                      ))}
+                {selectedNative.comment && (
+                  <section>
+                    <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Description</h4>
+                    <div className="rounded-xl border border-border bg-surface/30 p-4">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted">
+                        {selectedNative.comment}
+                      </p>
                     </div>
-                    <button
-                      onClick={() => handleCopy(getSnippet(snippetLang, selectedNative))}
-                      className="text-xs hover:text-primary transition-colors"
-                    >
-                      {copied ? <Check size={12} /> : <Copy size={12} />}
-                    </button>
-                  </div>
-                  <pre className="font-mono text-sm overflow-x-auto whitespace-pre-wrap text-muted">
-                    {getSnippet(snippetLang, selectedNative)}
-                  </pre>
-                </div>
-              </section>
+                  </section>
+                )}
 
-              <section>
-                <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Details</h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
-                    <span className="text-sm text-muted">Hash</span>
-                    <span className="text-sm font-mono text-primary">{selectedNative.hash}</span>
+                <section>
+                  <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Snippet</h4>
+                  <div className={cn("rounded-xl border p-3", snippetTheme[snippetLang]?.panel || 'border-border bg-background/50')}>
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="flex gap-2">
+                        {['cpp', 'csharp', 'lua', 'javascript'].map(lang => {
+                          const theme = snippetTheme[lang];
+                          return (
+                            <button
+                              key={lang}
+                              onClick={() => setSnippetLang(lang)}
+                              className={cn(
+                                "border text-[10px] uppercase font-bold px-2 py-1 rounded transition-all",
+                                snippetLang === lang
+                                  ? theme.tab
+                                  : "border-transparent text-muted hover:text-foreground hover:bg-white/5"
+                              )}
+                            >
+                              {lang === 'javascript' ? 'JS' : lang === 'csharp' ? 'C#' : lang}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <button
+                        onClick={() => handleCopy(getSnippet(snippetLang, selectedNative))}
+                        className={cn("text-xs transition-colors", snippetTheme[snippetLang]?.accent || 'text-muted hover:text-primary')}
+                      >
+                        {copied ? <Check size={12} /> : <Copy size={12} />}
+                      </button>
+                    </div>
+                    <pre className={cn("overflow-x-auto whitespace-pre-wrap font-mono text-sm rounded-lg border border-white/5 p-3 bg-black/10", snippetTheme[snippetLang]?.text || 'text-muted')}>
+                      {getSnippet(snippetLang, selectedNative)}
+                    </pre>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
-                    <span className="text-sm text-muted">Return Type</span>
-                    <span className="text-sm font-mono text-blue-400">{selectedNative.results || selectedNative.return_type || 'void'}</span>
+                </section>
+
+                <section>
+                  <h4 className="text-xs font-bold uppercase text-muted mb-3 tracking-widest">Détails</h4>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center border-b border-border/50 py-2">
+                      <span className="text-sm text-muted">Hash</span>
+                      <span className="text-sm font-mono text-primary">{selectedNative.hash}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-border/50 py-2">
+                      <span className="text-sm text-muted">Type retour</span>
+                      <span className="text-sm font-mono text-blue-400">{selectedNative.results || selectedNative.return_type || 'void'}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-b border-border/50 py-2">
+                      <span className="text-sm text-muted">Paramètres</span>
+                      <span className="text-sm text-muted">
+                        {Array.isArray(selectedNative.params) ? selectedNative.params.length : 'N/A'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-sm text-muted">Namespace</span>
+                      <span className="text-sm font-medium text-primary">{activeNamespace}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-border/50">
-                    <span className="text-sm text-muted">Parameters</span>
-                    <span className="text-sm text-muted">
-                      {Array.isArray(selectedNative.params) ? selectedNative.params.length : 'N/A'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-sm text-muted">Namespace</span>
-                    <span className="text-sm font-medium text-primary">{activeNamespace}</span>
-                  </div>
-                </div>
-              </section>
+                </section>
+              </div>
             </div>
           </div>
         )}

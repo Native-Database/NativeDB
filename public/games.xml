@@ -1,0 +1,94 @@
+<games>
+  <game id="gta5">
+    <name>GTA V</name>
+    <description>Grand Theft Auto V Natives</description>
+    <detailedDescription>Explore and generate native function calls for Grand Theft Auto V. This database provides detailed information on game internals.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.GTAV</url>
+    <links>
+      <link type="internal" href="/native/gta5" label="Open" icon="Database" />
+      <link type="internal" href="/generate/gta5" label="Export" icon="Code" />
+    </links>
+  </game>
+
+  <game id="rdr2">
+    <name>RDR 2</name>
+    <description>Red Dead Redemption 2 Natives</description>
+    <detailedDescription>Dive into the native functions of Red Dead Redemption 2. Essential for modding and understanding game mechanics.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.RDR2</url>
+    <links>
+      <link type="internal" href="/native/rdr2" label="Open" icon="Database" />
+      <link type="internal" href="/generate/rdr2" label="Export" icon="Code" />
+    </links>
+  </game>
+
+  <game id="rdr" type="header">
+    <name>RDR</name>
+    <description>Red Dead Redemption Natives</description>
+    <detailedDescription>Access native functions for the original Red Dead Redemption. Useful for preservation and exploration.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.RDR</url>
+    <links>
+      <link type="internal" href="/native/rdr" label="Open" icon="Database" />
+      <link type="internal" href="/generate/rdr" label="Export" icon="Code" />
+    </links>
+  </game>
+
+  <game id="mp3" type="header">
+    <name>Max Payne 3</name>
+    <description>Max Payne 3 Natives</description>
+    <detailedDescription>Explore the native database for Max Payne 3. Provides insights into the game engine and scripting.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.MP3</url>
+    <links>
+      <link type="internal" href="/native/mp3" label="Open" icon="Database" />
+      <link type="internal" href="/generate/mp3" label="Export" icon="Code" />
+    </links>
+  </game>
+
+  <game id="gta4" type="header">
+    <name>GTA IV</name>
+    <description>Grand Theft Auto IV Natives</description>
+    <detailedDescription>Investigate native functions for Grand Theft Auto IV. A valuable resource for mod developers and enthusiasts.</detailedDescription>
+    <icon>Database</icon>
+    <url>process.env.GTAIV</url>
+    <links>
+      <link type="internal" href="/native/gta4" label="Open" icon="Database" />
+      <link type="internal" href="/generate/gta4" label="Export" icon="Code" />
+    </links>
+  </game>
+
+  <game id="converter">
+    <name>Converter</name>
+    <description>Dev tools: Hex, Base64, Hashing and more.</description>
+    <detailedDescription>A collection of essential developer tools for converting data formats, encoding/decoding, and generating hashes.</detailedDescription>
+    <icon>Zap</icon>
+    <color>text-blue-400</color>
+    <links>
+      <link type="internal" href="/converter" label="Converter" icon="Zap" />
+    </links>
+  </game>
+
+  <game id="discord">
+    <name>Discord</name>
+    <description>Join our community and add our bot.</description>
+    <detailedDescription>Connect with other users, get support, and stay updated on the latest news by joining our Discord server. You can also add our bot to your own server.</detailedDescription>
+    <icon>Discord</icon>
+    <links>
+      <link type="external" href="process.env.DISCORD_BOT_URL" label="Bot" icon="Cpu" />
+      <link type="external" href="process.env.DISCORD_SERVER_URL" label="Join" icon="Users" />
+    </links>
+  </game>
+
+  <game id="rockstar">
+    <name>Rockstar</name>
+    <description>Rockstar ID tools: Avatar lookup and more.</description>
+    <detailedDescription>Retrieve profile avatars from Rockstar Social Club IDs. Useful for checking player profiles and getting avatar images.</detailedDescription>
+    <icon>User</icon>
+    <color>text-red-400</color>
+    <links>
+      <link type="internal" href="/rockstar" label="Open" icon="User" />
+    </links>
+  </game>
+</games>

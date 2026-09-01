@@ -1,4 +1,4 @@
-import {GAMES} from '@/lib/utils';
+import {loadGamesServer} from '@/lib/games.server';
 import {NextResponse} from 'next/server';
 
 const GAME_URLS = {
@@ -260,7 +260,8 @@ export async function GET(request) {
   const refresh = searchParams.get('refresh');
 
   try {
-    const gamesWithNatives = GAMES.filter(g => g.url);
+    const gamesList = await loadGamesServer();
+  const gamesWithNatives = gamesList.filter(g => g.url);
 
     if (!gameId) {
       const results = await Promise.all(gamesWithNatives.map(async (game) => {

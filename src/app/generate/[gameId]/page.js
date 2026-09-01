@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { GAMES, cn } from '@/lib/utils';
+import { loadGames, getGameById } from '@/lib/games';
+import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import { Download, Check } from 'lucide-react';
 
 export default function GeneratePage() {
   const { gameId } = useParams();
-  const game = GAMES.find(g => g.id === gameId);
+  const [games, setGames] = useState([]);
+  const [gamesReady, setGamesReady] = useState(false);
+  const game = getGameById(games, gameId);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +22,15 @@ export default function GeneratePage() {
   const [namingConvention, setNamingConvention] = useState('default');
   const [customInvoke, setCustomInvoke] = useState('Invoke');
   const [generating, setGenerating] = useState(false);
+
+  useEffect(() => {
+    async function loadGameList() {
+      const loadedGames = await loadGames();
+      setGames(loadedGames);
+      setGamesReady(true);
+    }
+    loadGameList();
+  }, []);
 
   useEffect(() => {
     async function loadNatives() {
@@ -323,6 +335,7 @@ export default function GeneratePage() {
     }
   };
 
+  if (!gamesReady) return <div className="flex items-center justify-center h-screen text-muted">Loading game data...</div>;
   if (!game) return <div>Game not found</div>;
 
   return (
