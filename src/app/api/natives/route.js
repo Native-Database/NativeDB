@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
-import { GAMES } from '@/lib/utils';
+import {GAMES} from '@/lib/utils';
+import {NextResponse} from 'next/server';
 
 const GAME_URLS = {
-  gta5: { url: 'https://raw.githubusercontent.com/alloc8or/gta5-nativedb-data/master/natives.json', type: 'json' },
-  rdr2: { url: 'https://raw.githubusercontent.com/alloc8or/rdr3-nativedb-data/master/natives.json', type: 'json' },
-  rdr: { url: 'https://cdn.veyvy.space/data/scdb/rdr.h', type: 'header' },
-  mp3: { url: 'https://cdn.veyvy.space/data/scdb/mp3.h', type: 'header' },
-  gta4: { url: 'https://cdn.veyvy.space/data/scdb/gtaIV.h', type: 'header' }
+  gta5: {url: process.env.GTAV, type: 'json'},
+  rdr2: {url: process.env.RDR2, type: 'json'},
+  rdr: {url: process.env.RDR, type: 'header'},
+  mp3: {url: process.env.MP3, type: 'header'},
+  gta4: {url: process.env.GTAIV, type: 'header'}
 };
 
 const cache = new Map();
@@ -33,7 +33,7 @@ function parseHeaderFile(content) {
   while (i < lines.length) {
     const rawLine = lines[i];
     let line = rawLine.replace(/\/\/.*$/, '').trim();
-    
+
     if (!line) {
       i++;
       continue;
@@ -72,14 +72,18 @@ function parseHeaderFile(content) {
       continue;
     }
 
-    const funcMatch = line.match(/^static\s+(?:inline\s+)?(?:auto\s+)?([A-Za-z_][\w:<>&\s\*]*?)\s+(\w+)\s*\(([^)]*)\)/);
-    
+    const funcMatch = line.match(
+        /^static\s+(?:inline\s+)?(?:auto\s+)?([A-Za-z_][\w:<>&\s\*]*?)\s+(\w+)\s*\(([^)]*)\)/);
+
     if (funcMatch) {
       const returnType = funcMatch[1].trim();
       const fnName = funcMatch[2];
       const paramsStr = funcMatch[3];
 
-      const skip = ['if', 'else', 'while', 'for', 'return', 'typedef', 'struct', 'enum', 'static', 'inline', 'const', 'extern', 'using'];
+      const skip = [
+        'if', 'else', 'while', 'for', 'return', 'typedef', 'struct', 'enum',
+        'static', 'inline', 'const', 'extern', 'using'
+      ];
       if (skip.includes(returnType) || !fnName) {
         i++;
         continue;
@@ -90,7 +94,8 @@ function parseHeaderFile(content) {
       if (hashMatch) {
         hash = hashMatch[0].toUpperCase();
       } else {
-        const invokeHashMatch = rawLine.match(/Invoke\s*<\s*(0x[A-Fa-f0-9]{8,16})/i);
+        const invokeHashMatch =
+            rawLine.match(/Invoke\s*<\s*(0x[A-Fa-f0-9]{8,16})/i);
         if (invokeHashMatch) {
           hash = invokeHashMatch[1].toUpperCase();
         } else {
@@ -103,14 +108,18 @@ function parseHeaderFile(content) {
         for (const p of paramsStr.split(',')) {
           const pTrim = p.trim();
           if (!pTrim || pTrim === 'void') continue;
-          const pMatch = pTrim.match(/^(?:const\s+)?([A-Za-z_][\w:<>\s\*&]*?)(?:\*|&)?\s+(\w+)$/);
+          const pMatch = pTrim.match(
+              /^(?:const\s+)?([A-Za-z_][\w:<>\s\*&]*?)(?:\*|&)?\s+(\w+)$/);
           if (pMatch) {
-            params.push({ type: pMatch[1].trim(), name: pMatch[2] });
+            params.push({type: pMatch[1].trim(), name: pMatch[2]});
           } else if (pTrim.includes(' ')) {
             const parts = pTrim.split(/\s+/);
-            params.push({ type: parts.slice(0, -1).join(' '), name: parts[parts.length - 1] });
+            params.push({
+              type: parts.slice(0, -1).join(' '),
+              name: parts[parts.length - 1]
+            });
           } else {
-            params.push({ type: pTrim, name: 'param' });
+            params.push({type: pTrim, name: 'param'});
           }
         }
       }
@@ -134,7 +143,7 @@ function parseHeaderFile(content) {
   if (natives['GLOBAL'] && Object.keys(natives['GLOBAL']).length === 0) {
     delete natives['GLOBAL'];
   }
-  
+
   return natives;
 }
 
@@ -159,7 +168,7 @@ async function fetchNatives(gameId, forceRefresh = false) {
       data = await response.json();
     }
 
-    cache.set(gameId, { data, timestamp: Date.now() });
+    cache.set(gameId, {data, timestamp: Date.now()});
     return data;
   } catch {
     return null;
@@ -169,13 +178,13 @@ async function fetchNatives(gameId, forceRefresh = false) {
 function searchNatives(data, query) {
   const searchLower = query.toLowerCase();
   const result = {};
-  
+
   for (const [ns, natives] of Object.entries(data)) {
     for (const [nativeHash, native] of Object.entries(natives)) {
       const name = native.name || native.NativeName || native.hashName || '';
       const description = native.description || '';
-      
-      if (name.toLowerCase().includes(searchLower) || 
+
+      if (name.toLowerCase().includes(searchLower) ||
           nativeHash.toLowerCase().includes(searchLower) ||
           description.toLowerCase().includes(searchLower)) {
         if (!result[ns]) result[ns] = {};
@@ -189,11 +198,11 @@ function searchNatives(data, query) {
 function filterByHash(data, hash) {
   const hashLower = hash.toLowerCase();
   const result = {};
-  
+
   for (const [ns, natives] of Object.entries(data)) {
     for (const [nativeHash, native] of Object.entries(natives)) {
       if (nativeHash.toLowerCase() === hashLower) {
-        result[ns] = { [nativeHash]: native };
+        result[ns] = {[nativeHash]: native};
         break;
       }
     }
@@ -203,13 +212,13 @@ function filterByHash(data, hash) {
 
 function getRandomNatives(data, count = 1) {
   const allNatives = [];
-  
+
   for (const [ns, natives] of Object.entries(data)) {
     for (const [nativeHash, native] of Object.entries(natives)) {
-      allNatives.push({ namespace: ns, hash: nativeHash, ...native });
+      allNatives.push({namespace: ns, hash: nativeHash, ...native});
     }
   }
-  
+
   const shuffled = allNatives.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
@@ -218,24 +227,24 @@ function paginateNatives(data, limit = 100, offset = 0) {
   const result = {};
   let totalCount = 0;
   let currentOffset = offset;
-  
+
   for (const [ns, natives] of Object.entries(data)) {
     const nativeList = Object.entries(natives);
     const startIndex = Math.max(0, currentOffset);
     const endIndex = startIndex + limit;
-    
+
     const paginatedNatives = nativeList.slice(startIndex, endIndex);
-    
+
     if (paginatedNatives.length > 0) {
       result[ns] = Object.fromEntries(paginatedNatives);
       limit -= paginatedNatives.length;
     }
-    
+
     currentOffset -= Math.min(0, nativeList.length - startIndex);
     totalCount += nativeList.length;
   }
-  
-  return { data: result, total: totalCount, offset, limit };
+
+  return {data: result, total: totalCount, offset, limit};
 }
 
 export async function GET(request) {
@@ -254,57 +263,54 @@ export async function GET(request) {
     const gamesWithNatives = GAMES.filter(g => g.url);
 
     if (!gameId) {
-      const results = await Promise.all(
-        gamesWithNatives.map(async (game) => {
-          const gameConfig = GAME_URLS[game.id];
-          if (!gameConfig) return null;
-          
-          const data = await fetchNatives(game.id, refresh === 'true');
-          if (!data) return null;
-          
-          const nsList = Object.keys(data).sort();
-          return {
-            game: game.id,
-            gameName: game.name,
-            count: nsList.reduce((acc, ns) => acc + Object.keys(data[ns] || {}).length, 0),
-            namespaces: nsList.map(ns => ({
-              name: ns,
-              count: Object.keys(data[ns] || {}).length
-            }))
-          };
-        })
-      );
+      const results = await Promise.all(gamesWithNatives.map(async (game) => {
+        const gameConfig = GAME_URLS[game.id];
+        if (!gameConfig) return null;
+
+        const data = await fetchNatives(game.id, refresh === 'true');
+        if (!data) return null;
+
+        const nsList = Object.keys(data).sort();
+        return {
+          game: game.id,
+          gameName: game.name,
+          count: nsList.reduce(
+              (acc, ns) => acc + Object.keys(data[ns] || {}).length, 0),
+          namespaces: nsList.map(
+              ns => ({name: ns, count: Object.keys(data[ns] || {}).length}))
+        };
+      }));
 
       const availableGames = results.filter(g => g !== null);
 
-      return NextResponse.json({
-        games: availableGames,
-        total: availableGames.length
-      });
+      return NextResponse.json(
+          {games: availableGames, total: availableGames.length});
     }
 
     const game = gamesWithNatives.find(g => g.id === gameId);
     if (!game) {
-      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
+      return NextResponse.json({error: 'Game not found'}, {status: 404});
     }
 
     const gameConfig = GAME_URLS[gameId];
     if (!gameConfig) {
-      return NextResponse.json({ error: 'Natives data not available for this game' }, { status: 404 });
+      return NextResponse.json(
+          {error: 'Natives data not available for this game'}, {status: 404});
     }
 
     const data = await fetchNatives(gameId, refresh === 'true');
     if (!data) {
-      return NextResponse.json({ error: 'Failed to fetch natives data' }, { status: 404 });
+      return NextResponse.json(
+          {error: 'Failed to fetch natives data'}, {status: 404});
     }
 
-    let resultData = { ...data };
+    let resultData = {...data};
 
     if (namespace) {
       if (data[namespace]) {
-        resultData = { [namespace]: data[namespace] };
+        resultData = {[namespace]: data[namespace]};
       } else {
-        return NextResponse.json({ error: 'Namespace not found' }, { status: 404 });
+        return NextResponse.json({error: 'Namespace not found'}, {status: 404});
       }
     }
 
@@ -313,10 +319,8 @@ export async function GET(request) {
       return NextResponse.json({
         game: gameId,
         gameName: game.name,
-        namespaces: nsList.map(ns => ({
-          name: ns,
-          count: Object.keys(resultData[ns] || {}).length
-        }))
+        namespaces: nsList.map(
+            ns => ({name: ns, count: Object.keys(resultData[ns] || {}).length}))
       });
     }
 
@@ -331,32 +335,30 @@ export async function GET(request) {
     if (random) {
       const count = parseInt(random) || 1;
       const natives = getRandomNatives(resultData, Math.min(count, 50));
-      return NextResponse.json({
-        game: gameId,
-        gameName: game.name,
-        count: natives.length,
-        natives
-      });
+      return NextResponse.json(
+          {game: gameId, gameName: game.name, count: natives.length, natives});
     }
 
-    const { data: paginatedData, total } = paginateNatives(resultData, limit, offset);
+    const {data: paginatedData, total} =
+        paginateNatives(resultData, limit, offset);
     const nsKeys = Object.keys(paginatedData).sort();
 
     return NextResponse.json({
       game: gameId,
       gameName: game.name,
-      count: nsKeys.reduce((acc, ns) => acc + Object.keys(paginatedData[ns] || {}).length, 0),
+      count: nsKeys.reduce(
+          (acc, ns) => acc + Object.keys(paginatedData[ns] || {}).length, 0),
       total,
       offset,
       limit,
-      namespaces: nsKeys.map(ns => ({
-        name: ns,
-        count: Object.keys(paginatedData[ns] || {}).length
-      })),
+      namespaces: nsKeys.map(
+          ns =>
+              ({name: ns, count: Object.keys(paginatedData[ns] || {}).length})),
       natives: paginatedData
     });
   } catch (error) {
     console.error('Error fetching natives:', error);
-    return NextResponse.json({ error: 'Failed to fetch natives data' }, { status: 500 });
+    return NextResponse.json(
+        {error: 'Failed to fetch natives data'}, {status: 500});
   }
 }

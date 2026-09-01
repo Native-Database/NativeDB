@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { GAMES } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { ChevronRight, Database, X } from 'lucide-react';
 import Link from 'next/link';
