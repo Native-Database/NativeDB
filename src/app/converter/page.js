@@ -1,47 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { Copy, Check } from 'lucide-react';
+import { loadConverterTools } from '@/lib/utils';
 
-const tools = {
-  'number-converter': {
-    name: 'Number Converter',
-    component: NumberConverter
-  },
-  'text-base64': {
-    name: 'Text ↔ Base64',
-    component: TextBase64
-  },
-  'url-encoder': {
-    name: 'URL Encoder / Decoder',
-    component: UrlEncoder
-  },
-  'hash-generator': {
-    name: 'Hash Generator',
-    component: HashGenerator
-  },
-  'joaat-converter': {
-    name: 'JOAAT Converter',
-    component: JoaatConverter
-  },
-  'color-converter': {
-    name: 'Color Converter',
-    component: ColorConverter
-  },
-  'hex-viewer': {
-    name: 'Hex Viewer',
-    component: HexViewer
-  },
-  'pattern-finder': {
-    name: 'Pattern Finder',
-    component: PatternFinder
-  }
+const toolComponents = {
+  'number-converter': NumberConverter,
+  'text-base64': TextBase64,
+  'url-encoder': UrlEncoder,
+  'hash-generator': HashGenerator,
+  'joaat-converter': JoaatConverter,
+  'color-converter': ColorConverter,
+  'hex-viewer': HexViewer
 };
 
 export default function ConverterPage() {
-  const [activeTool, setActiveTool] = useState('number-converter');
+  const [tools, setTools] = useState({});
+  const [activeTool, setActiveTool] = useState('');
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    const loadTools = async () => {
+      try {
+        const converterTools = await loadConverterTools();
+        const xmlTools = converterTools.reduce((result, tool) => {
+          result[tool.id] = {
+            ...tool,
+            component: toolComponents[tool.id] || XmlToolPage
+          };
+          return result;
+        }, {});
+
+        setTools(xmlTools);
+        setActiveTool(Object.keys(xmlTools)[0]);
+      } catch (error) {
+        console.error('Failed to load converter.xml:', error);
+        setLoadError('Unable to load converter.xml.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTools();
+  }, []);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -49,7 +53,18 @@ export default function ConverterPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const ActiveComponent = tools[activeTool].component;
+  const ActiveComponent = tools[activeTool]?.component;
+
+  if (loading || loadError || !ActiveComponent) {
+    return (
+      <div className="flex flex-col h-screen overflow-hidden">
+        <Navbar />
+        <main className="flex flex-1 items-center justify-center bg-background/30 p-6">
+          <p className="text-muted">{loadError || 'Loading converter tools...'}</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -102,15 +117,120 @@ export default function ConverterPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted">Converter</p>
-                <h2 className="text-2xl font-bold">{tools[activeTool].name}</h2>
+                <h2 className="text-2xl font-bold">{tools[activeTool]?.name}</h2>
               </div>
             </div>
           </div>
 
           <div className="flex-1 p-6">
-            <ActiveComponent onCopy={handleCopy} copied={copied} />
+            <ActiveComponent onCopy={handleCopy} copied={copied} tool={tools[activeTool]} />
           </div>
         </main>
+      </div>
+    </div>
+  );
+}
+
+function XmlToolPage({ tool, onCopy, copied }) {
+  const tabs = tool.tabs.length > 0 ? tool.tabs : [{ id: 'main', name: tool.name, fields: [] }];
+  const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [values, setValues] = useState(() => Object.fromEntries(
+    tabs.flatMap(tab => tab.fields.map(field => [field.id, field.value]))
+  ));
+
+  const currentTab = tabs.find(tab => tab.id === activeTab) || tabs[0];
+
+  return (
+    <div className="max-w-4xl space-y-6">
+      {tool.description && <p className="text-muted">{tool.description}</p>}
+
+      {tabs.length > 1 && (
+        <div className="flex gap-2 border-b border-border">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`border-b-2 px-4 py-2 text-sm ${activeTab === tab.id
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted hover:text-foreground'
+                }`}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {currentTab.fields.map(field => (
+          <XmlField
+            key={field.id}
+            field={field}
+            value={values[field.id] ?? ''}
+            copied={copied}
+            onCopy={onCopy}
+            onChange={value => setValues(previous => ({ ...previous, [field.id]: value }))}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function XmlField({ field, value, copied, onCopy, onChange }) {
+  const fieldClassName = 'w-full bg-surface border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-primary/50';
+
+  if (field.type === 'checkbox') {
+    return (
+      <label className="flex items-center gap-3 text-sm">
+        <input
+          type="checkbox"
+          checked={value === 'true'}
+          disabled={field.readonly}
+          onChange={event => onChange(event.target.checked ? 'true' : 'false')}
+        />
+        {field.label}
+      </label>
+    );
+  }
+
+  const control = field.type === 'textarea' ? (
+    <textarea
+      value={value}
+      readOnly={field.readonly}
+      placeholder={field.placeholder}
+      rows={6}
+      onChange={event => onChange(event.target.value)}
+      className={`${fieldClassName} resize-none`}
+    />
+  ) : field.type === 'select' ? (
+    <select value={value} onChange={event => onChange(event.target.value)} className={fieldClassName}>
+      {field.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+    </select>
+  ) : (
+    <input
+      type={field.type}
+      value={value}
+      readOnly={field.readonly}
+      placeholder={field.placeholder}
+      onChange={event => onChange(event.target.value)}
+      className={fieldClassName}
+    />
+  );
+
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium">{field.label}</label>
+      <div className="relative">
+        {control}
+        {field.readonly && (
+          <button
+            onClick={() => onCopy(value)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 hover:bg-primary/10"
+          >
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -873,101 +993,6 @@ function HexViewer({ onCopy, copied }) {
         <div className="font-mono text-xs space-y-1">
           <div>00000000: {hexOutput.substr(0, 32)} {asciiOutput.substr(0, 16)}</div>
           <div>00000010: {hexOutput.substr(32, 32)} {asciiOutput.substr(16, 16)}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PatternFinder({ onCopy, copied }) {
-  const [input, setInput] = useState('');
-  const [pattern, setPattern] = useState('');
-  const [results, setResults] = useState([]);
-
-  const findPattern = (text, searchPattern) => {
-    if (!text || !searchPattern) return [];
-
-    const results = [];
-    let index = text.indexOf(searchPattern);
-
-    while (index !== -1) {
-      results.push({
-        position: index,
-        hex: '0x' + index.toString(16).toUpperCase().padStart(8, '0'),
-        context: text.substr(Math.max(0, index - 10), searchPattern.length + 20)
-      });
-      index = text.indexOf(searchPattern, index + 1);
-    }
-
-    return results;
-  };
-
-  const handleSearch = () => {
-    const found = findPattern(input, pattern);
-    setResults(found);
-  };
-
-  return (
-    <div className="space-y-6 max-w-4xl">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Input Text</label>
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter text to search in..."
-            rows={8}
-            className="w-full bg-surface border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-primary/50 resize-none"
-          />
-        </div>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Search Pattern</label>
-            <input
-              type="text"
-              value={pattern}
-              onChange={(e) => setPattern(e.target.value)}
-              placeholder="Enter pattern to find..."
-              className="w-full bg-surface border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-primary/50"
-            />
-          </div>
-
-          <button
-            onClick={handleSearch}
-            disabled={!input || !pattern}
-            className="w-full bg-primary hover:bg-primary/80 disabled:bg-muted disabled:cursor-not-allowed text-primary-foreground rounded-lg px-4 py-3 font-medium transition-all"
-          >
-            Find Pattern
-          </button>
-
-          <div className="text-sm text-muted">
-            Found {results.length} occurrence{results.length !== 1 ? 's' : ''}
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium">Results</label>
-        <div className="max-h-96 overflow-y-auto space-y-2 custom-scrollbar">
-          {results.length === 0 ? (
-            <div className="text-center text-muted py-8">No results found</div>
-          ) : (
-            results.map((result, i) => (
-              <div key={i} className="bg-surface border border-border rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Match #{i + 1}</span>
-                  <span className="text-xs text-muted font-mono">{result.hex}</span>
-                </div>
-                <div className="font-mono text-sm bg-background/50 p-2 rounded">
-                  {result.context}
-                </div>
-                <div className="text-xs text-muted mt-1">
-                  Position: {result.position}
-                </div>
-              </div>
-            ))
-          )}
         </div>
       </div>
     </div>

@@ -1,0 +1,36 @@
+<tools>
+  <tool id="number-converter">
+    <name>Number Converter</name>
+    <description>Convert signed, unsigned, hexadecimal and binary 32-bit values.</description>
+  </tool>
+
+  <tool id="text-base64">
+    <name>Text to Base64</name>
+    <description>Encode text to Base64 and decode Base64 back to text.</description>
+  </tool>
+
+  <tool id="url-encoder">
+    <name>URL Encoder / Decoder</name>
+    <description>Encode and decode URL-safe text.</description>
+  </tool>
+
+  <tool id="hash-generator">
+    <name>Hash Generator</name>
+    <description>Generate SHA-1, SHA-256 and SHA-512 hashes.</description>
+  </tool>
+
+  <tool id="joaat-converter">
+    <name>JOAAT Converter</name>
+    <description>Convert strings to JOAAT hashes and look up native names.</description>
+  </tool>
+
+  <tool id="color-converter">
+    <name>Color Converter</name>
+    <description>Convert RGB, HEX and HSL color values.</description>
+  </tool>
+
+  <tool id="hex-viewer">
+    <name>Hex Viewer</name>
+    <description>Convert text to hexadecimal and inspect its ASCII representation.</description>
+  </tool>
+</tools>
